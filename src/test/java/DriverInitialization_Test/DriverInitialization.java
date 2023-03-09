@@ -8,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
 
 public class DriverInitialization {
-    WebDriver driver;
+    public static WebDriver driver;
    // ExtentReports extent;
     ExtentTest test;
 

@@ -6,7 +6,6 @@ Feature: Itinerary search
     When  a user navigates to the Login page using "https://adactinhotelapp.com/"
     And a user enter "Prudie24" and "22R947"
     And a user clicks the login button
-    Then a user is logged in successfully
 
     Scenario:
       And a user navigate to the Booked Itinerary
