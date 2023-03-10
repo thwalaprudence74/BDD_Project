@@ -1,7 +1,9 @@
 package StepDefinations;
+
 import DriverInitialization_Test.DriverInitialization;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.Assert;
@@ -11,28 +13,29 @@ import org.openqa.selenium.support.ui.Select;
 
 public class BookHotel_Steps extends DriverInitialization {
 
+    ExtentReports extent;
+    ExtentTest test;
 
-
-       @And("a user inputs their details in the search form")
-       public void aUserInputsTheirDetailsInTheSearchForm() {
+    @And("a user inputs their details in the search form")
+    public void aUserInputsTheirDetailsInTheSearchForm() {
 
         //location
         WebElement locations = driver.findElement(By.id("location"));
         Select location = new Select(locations);
-       location.selectByIndex(2);
+        location.selectByIndex(2);
 
         //hotel
-       WebElement hotels = driver.findElement(By.id("hotels"));
+        WebElement hotels = driver.findElement(By.id("hotels"));
         Select hotel = new Select(hotels);
-       hotel.selectByIndex(2);
+        hotel.selectByIndex(2);
 
-          //room type
+        //room type
         WebElement roomTypes = driver.findElement(By.id("room_type"));
         Select roomType = new Select(roomTypes);
         roomType.selectByIndex(2);
 
 
-       // check in date
+        // check in date
         driver.findElement(By.id("datepick_in")).clear();
         driver.findElement(By.id("datepick_in")).sendKeys("02/03/2022");
 
@@ -48,7 +51,7 @@ public class BookHotel_Steps extends DriverInitialization {
         driver.findElement(By.id("Submit")).click();
     }
 
-   @And("a user select hotel")
+    @And("a user select hotel")
     public void aUserSelectHotel() {
         driver.findElement(By.id("radiobutton_0")).click();
     }
@@ -59,33 +62,42 @@ public class BookHotel_Steps extends DriverInitialization {
     }
 
     @And("a user enters Booking details{string}, {string}, {string}, {string}, {string}, {string}, {string}, {string}")
-   public void aUserEntersBookingDetails(String firstName, String lastName, String address, String cardNumber, String cardType, String expiryMonth, String expiryYear, String cvvNumber) {
-       // first name
+    public void aUserEntersBookingDetails(String firstName, String lastName, String address, String cardNumber, String cardType, String expiryMonth, String expiryYear, String cvvNumber) {
+        // first name
         driver.findElement(By.id("first_name")).sendKeys(firstName);
 
-       // last name
+        // last name
         driver.findElement(By.id("last_name")).sendKeys(lastName);
 
         //address
-       driver.findElement(By.id("address")).sendKeys(address);
+        driver.findElement(By.id("address")).sendKeys(address);
 
         //card number
         driver.findElement(By.id("cc_num")).sendKeys(cardNumber);
 
-       // card type
+
+        if (cardNumber.length() < 16) {
+            extent = getReportObject("\\reports\\unsuccessfulBooking-report.html");
+            test = extent.createTest("Booking error validation");
+        } else {
+            extent = getReportObject("\\reports\\successfulBooking-report.html");
+            test = extent.createTest("Booking");
+        }
+
+        // card type
         WebElement types = driver.findElement(By.id("cc_type"));
         Select type = new Select(types);
         type.selectByVisibleText(cardType);
 
-       // expiryMonth
+        // expiryMonth
         WebElement months = driver.findElement(By.id("cc_exp_month"));
         Select month = new Select(months);
         month.selectByVisibleText(expiryMonth);
 
-       // expiryYear
+        // expiryYear
         WebElement years = driver.findElement(By.id("cc_exp_year"));
         Select year = new Select(years);
-       year.selectByVisibleText(expiryYear);
+        year.selectByVisibleText(expiryYear);
 
         //cvvNumber
         driver.findElement(By.id("cc_cvv")).sendKeys(cvvNumber);
@@ -99,17 +111,27 @@ public class BookHotel_Steps extends DriverInitialization {
 
     @And("a user booked successfully")
     public void aUserBookedSuccessfully() {
-        if(!driver.findElement(By.id("order_no")).isDisplayed()){
+        if (!driver.findElement(By.id("order_no")).isDisplayed()) {
+            test.fail("Booking failed");
             Assert.fail();
+        } else {
+            test.pass("Booking is successful");
         }
+        closeDriver();
+        extent.flush();
     }
 
     @Then("a user get error message")
     public void aUserGetErrorMessage() {
 
-        if(!driver.findElement(By.id("cc_num_span")).isDisplayed()){
+        if (!driver.findElement(By.id("cc_num_span")).isDisplayed()) {
+            test.fail("Validation failed");
             Assert.fail();
+        }else {
+            test.pass("Validation Passed");
         }
+        closeDriver();
+        extent.flush();
     }
 
 

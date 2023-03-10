@@ -8,6 +8,10 @@
     <artifactId>BDD_Exercise</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+<<<<<<< HEAD
+
+
+=======
          <build>
         <plugins>
             <plugin>
@@ -36,6 +40,7 @@
         </plugins>
     </build>
          
+>>>>>>> b671c68bdb752d8a825f62d731938b0fe82ec96d
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

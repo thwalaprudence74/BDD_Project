@@ -21,9 +21,7 @@ public class LoginSteps extends DriverInitialization {
     @Given("a user is on the home page")
     public void aUserIsOnTheHomePage() {
         driver = initializeDriver();
-        ExtentSparkReporter spark = new ExtentSparkReporter("C:\\Users\\ilabadmin\\Desktop\\cucumber\\BDD_Exercise\\BDD_Exercise\\reports/index.html");
-        extent = new ExtentReports();
-        extent.attachReporter(spark);
+        extent = getReportObject("\\reports\\loginReport.html");
         test = extent.createTest("Login");
     }
 
@@ -45,11 +43,14 @@ public class LoginSteps extends DriverInitialization {
 
     @Then("a user is logged in successfully")
     public void aUserIsLoggedInSuccessfully() {
-        Boolean logged = driver.findElement(By.xpath("/html[1]/body[1]/table[2]/tbody[1]/tr[1]/td[1]")).getText().equalsIgnoreCase("Welcome to Adactin Group of Hotels");
-        Assert.assertTrue(logged);
-        test.pass("Login is successful");
-        extent.flush();
+        if (!driver.findElement(By.id("location")).isDisplayed()) {
+            test.fail("Login unsuccessful").addScreenCaptureFromPath("screenshot.png");
+            Assert.fail();
+        } else {
+            test.pass("Login is successful");
+        }
         closeDriver();
+        extent.flush();
     }
 
 
